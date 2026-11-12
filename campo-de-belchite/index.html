@@ -3339,7 +3339,7 @@ const IMG_BASE=DATA.imgBase||"img/";
 const localImg=(key,w)=>IMG_BASE+key+(w<=330?"-s":"")+".jpg";
 const GAL=DATA.gallery||{};
 const galleryOf=id=>[id].concat(GAL[id]||[]).filter(k=>PH[k]);
-const creditHTML=ph=>`${esc(t(ph.context?"photoContext":"photo"))}: <a href="${esc(ph.page)}" target="_blank" rel="noopener">${esc(ph.author)}</a> · ${esc(ph.license)} · ${esc(ph.via||"Wikimedia Commons")}`;
+const creditHTML=ph=>`${esc(ph.aerial?({es:"Vista aérea",en:"Aerial view",fr:"Vue aérienne",de:"Luftbild",pt:"Vista aérea"}[lang]||"Vista aérea"):t(ph.context?"photoContext":"photo"))}: <a href="${esc(ph.page)}" target="_blank" rel="noopener">${esc(ph.author)}</a> · ${esc(ph.license)}${ph.aerial?"":" · "+esc(ph.via||"Wikimedia Commons")}`;
 const clauses=txt=>txt.split(/(?<=,)\s+/).map(x=>`<span class="nb">${esc(x)}</span>`).join(" ");
 function phHTML(key,cat,w,cls,credit){const ph=PH[key];const c=CATS[cat]?CATS[cat].color:"--accent";
   return `<div class="ph ${cls||""}" style="--c:var(${c})">${CATS[cat]?ICON(cat):""}${ph?`<img src="${localImg(key,w)}" data-fb="${esc(imgURL(ph.file,w))}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">`:""}${credit&&ph?`<span class="credit">${creditHTML(ph)}</span>`:""}</div>`;}
@@ -3879,7 +3879,34 @@ async function ghPut(tok,path,text,message){const P=DATA.publish||{};if(!P.repo)
 function statsReport(A){const w=window.open("","_blank");if(!w){toast(t("popupBlocked"));return;}
   const nfi=x=>new Intl.NumberFormat("es-ES").format(x);
   const tb=(rows)=>`<table>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td style="text-align:right">${nfi(r[1])}</td></tr>`).join("")}</table>`;
-  w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Informe de uso · Campo de Belchite Explora</title><style>body{font:15px/1.5 system-ui,sans-serif;color:#18221E;max-width:720px;margin:32px auto;padding:0 20px}h1{font-size:24px;margin:0}h2{font-size:16px;margin:24px 0 6px;border-bottom:1px solid #ccc;padding-bottom:4px}table{width:100%;border-collapse:collapse}td{padding:4px 0;border-bottom:1px solid #eee}.k{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.k div{border:1px solid #ccc;border-radius:8px;padding:10px}.k b{display:block;font-size:22px}.n{color:#666;font-size:13px}</style></head><body>
+  w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Informe de uso · Campo de Belchite Explora</title><style>body{font:15px/1.5 system-ui,sans-serif;color:#18221E;max-width:720px;margin:32px auto;padding:0 20px}h1{font-size:24px;margin:0}h2{font-size:16px;margin:24px 0 6px;border-bottom:1px solid #ccc;padding-bottom:4px}table{width:100%;border-collapse:collapse}td{padding:4px 0;border-bottom:1px solid #eee}.k{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.k div{border:1px solid #ccc;border-radius:8px;padding:10px}.k b{display:block;font-size:22px}.n{color:#666;font-size:13px}</style><style id="kiosk-css">
+body.kiosk a[href="#gestion"],body.kiosk #tomap{display:none!important}
+body.kiosk{user-select:none;-webkit-user-select:none}
+#kq{display:none}
+body.kiosk #kq{display:flex;position:absolute;left:14px;bottom:14px;z-index:1000;align-items:center;gap:12px;padding:10px 16px 10px 10px;border:0;border-radius:16px;background:#fff;color:#14221F;box-shadow:0 8px 28px rgba(0,0,0,.28);font:600 15px/1.25 var(--f-ui);max-width:300px;text-align:left;cursor:default}
+body.kiosk #kq .kqr{width:92px;height:92px;flex:none;display:block}
+body.kiosk #kq .kqr svg{width:100%;height:100%;display:block}
+#kss{position:fixed;inset:0;z-index:3000;background:#14221F;color:#fff;overflow:hidden;cursor:pointer}
+#kss[hidden]{display:none}
+#kss .kbg{position:absolute;inset:0;width:100%;height:100%;border-radius:0}
+#kss .kbg img{width:100%;height:100%;object-fit:cover;animation:kzoom 9s ease-out both}
+@keyframes kzoom{from{transform:scale(1.08)}to{transform:scale(1)}}
+#kss .kshade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,20,18,.82) 0%,rgba(10,20,18,.35) 55%,rgba(10,20,18,.15) 100%)}
+#kss .ktxt{position:absolute;left:6vw;bottom:10vh;max-width:56vw;animation:kin .9s ease-out both}
+@keyframes kin{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+#kss .kbrand{font:700 clamp(14px,1.6vw,22px)/1 var(--f-ui);letter-spacing:.18em;text-transform:uppercase;color:#8FC7C2;margin-bottom:2vh}
+#kss h2{font:600 clamp(36px,5.6vw,92px)/1.04 var(--f-display);margin:0 0 1.2vh}
+#kss p{font:500 clamp(18px,2.2vw,34px)/1.2 var(--f-ui);margin:0;color:#DCE9E6}
+#kss .ktouch{margin-top:5vh;display:inline-block;padding:14px 26px;border-radius:999px;background:#fff;color:#14221F;font:700 clamp(16px,1.8vw,26px)/1 var(--f-ui);animation:kpulse 2.2s ease-in-out infinite}
+@keyframes kpulse{50%{transform:scale(1.04)}}
+#kss .kqbig{position:absolute;right:5vw;bottom:10vh;width:clamp(200px,20vw,320px);background:#fff;color:#14221F;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:8px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+#kss .kqr2 svg{width:100%;height:auto;display:block}
+#kss .kqbig b{font:700 clamp(15px,1.4vw,22px)/1.2 var(--f-ui)}
+#kss .kqbig small{font:500 clamp(12px,1vw,16px)/1.3 var(--f-ui);color:#4A5550}
+@media (max-width:700px){#kss .ktxt{max-width:88vw;bottom:auto;top:12vh}#kss .kqbig{left:50%;right:auto;transform:translateX(-50%);bottom:5vh;width:58vw}body.kiosk #kq{display:none}}
+@media (prefers-reduced-motion:reduce){#kss *{animation:none!important}}
+</style>
+</head><body>
   <h1>Campo de Belchite Explora · Informe de uso</h1><p class="n">${esc(STATS?"Datos del contador anónimo de la guía.":"DATOS DE EJEMPLO: este informe muestra el formato. Con el contador conectado, las cifras son las reales.")} Generado el ${esc(fmtDateEs(today()))}.</p>
   <div class="k"><div><b>${nfi(A.visits)}</b>visitas</div><div><b>${A.foreign}%</b>visitantes de fuera de España</div><div><b>${nfi(A.qrScans)}</b>escaneos de placas QR</div><div><b>${nfi(A.audio)}</b>audioguías escuchadas</div><div><b>${nfi(A.stamps)}</b>sellos del pasaporte</div><div><b>${nfi(A.offline)}</b>descargas sin conexión</div></div>
   <h2>Por idioma</h2>${tb(A.byLang)}<h2>Por mes</h2>${tb(A.byMonth.map(([m,n])=>[new Date(2026,m-1,15).toLocaleDateString("es-ES",{month:"long"}),n]))}<h2>Lugares más consultados</h2>${tb(A.top.filter(x=>BYID[x[0]]).map(([id,n])=>[L10(BYID[id].name)+" ("+BYID[id].town+")",n]))}
@@ -4089,6 +4116,50 @@ setTimeout(()=>map.invalidateSize(),60);
   const upd=()=>{const r=mw.getBoundingClientRect();if(isPhone()&&r.bottom<60) b.removeAttribute("data-off"); else b.setAttribute("data-off","");};
   window.addEventListener("scroll",upd,{passive:true});window.addEventListener("resize",upd);upd();})();
 window.addEventListener("resize",()=>map.invalidateSize());
+/* ---------- Modo pantalla (tótem / pantalla de la oficina de turismo): ?pantalla ---------- */
+(function(){
+  let qs;try{qs=new URLSearchParams(location.search);}catch(e){return;}
+  if(!qs.has("pantalla")&&!qs.has("totem")) return;
+  document.body.classList.add("kiosk");
+  const IDLE=+(qs.get("espera")||90)*1000, PUB=(DATA.siteUrl||location.href.split("?")[0]).split("#")[0];
+  const K={es:{take:"Llévatela en tu móvil",takeP:"Llévate esta ficha en tu móvil",touch:"Toca la pantalla para empezar",scan:"Escanea con la cámara: gratis, sin instalar nada"},
+    en:{take:"Take it on your phone",takeP:"Take this page on your phone",touch:"Touch the screen to start",scan:"Scan with your camera: free, nothing to install"},
+    fr:{take:"Emportez-la sur votre mobile",takeP:"Emportez cette fiche sur votre mobile",touch:"Touchez l'écran pour commencer",scan:"Scannez avec l'appareil photo : gratuit, rien à installer"},
+    de:{take:"Nehmen Sie sie aufs Handy mit",takeP:"Diese Seite aufs Handy mitnehmen",touch:"Berühren Sie den Bildschirm",scan:"Mit der Kamera scannen: kostenlos, ohne Installation"},
+    pt:{take:"Leve-a no seu telemóvel",takeP:"Leve esta ficha no seu telemóvel",touch:"Toque no ecrã para começar",scan:"Leia com a câmara: grátis, sem instalar nada"}};
+  const k=n=>(K[lang]||K.es)[n];
+  /* QR flotante: lleva al móvil lo que se está viendo */
+  const fq=document.createElement("button");fq.type="button";fq.id="kq";fq.setAttribute("aria-label","QR");
+  ($("#mapwrap")||document.body).appendChild(fq);
+  let lastQ="";
+  function updQ(){const id=state.tab==="lugar"&&state.sel?state.sel:null,rt=state.tab==="rutas"&&state.route?state.route:null;
+    const url=PUB+(id?"#p-"+id:rt?"#r-"+rt:"");const lab=id?k("takeP"):k("take");const key=url+"|"+lab;if(key===lastQ) return;lastQ=key;
+    fq.innerHTML=`<span class="kqr"></span><span class="kql">${esc(lab)}</span>`;qrInto(fq.querySelector(".kqr"),url);}
+  setInterval(updQ,700);updQ();
+  /* Salvapantallas: fotos de los imprescindibles, QR grande y vuelta al inicio */
+  const ss=document.createElement("div");ss.id="kss";ss.hidden=true;document.body.appendChild(ss);
+  const ids=(MUST.length?MUST:POIS.map(p=>p.id)).filter(id=>BYID[id]&&PH[id]);
+  let i=0,li=0,timer=null,rot=null;
+  function slide(){const id=ids[i%ids.length],p=BYID[id];i++;
+    const L=LANGS[li%LANGS.length][0];li++;const KK=K[L];
+    ss.innerHTML=`${phHTML(id,p.cat,1600,"kbg")}<div class="kshade"></div>
+      <div class="ktxt"><div class="kbrand">Campo de Belchite Explora</div><h2>${esc((p.name&&p.name[L])||L10(p.name))}</h2><p>${esc(p.town)}</p>
+      <div class="ktouch">${esc(KK.touch)}</div></div>
+      <div class="kqbig"><span class="kqr2"></span><b>${esc(KK.take)}</b><small>${esc(KK.scan)}</small></div>`;
+    qrInto(ss.querySelector(".kqr2"),PUB);}
+  function sleep(){if(!ss.hidden) return;stopAudio();closeLightbox();state.sel=null;if(state.route){state.route=null;drawRoute(null);}
+    if(lang!=="es"){lang="es";store.set("rbx-lang","es");applyLang();}
+    try{sessionStorage.setItem(SP+"rbx-cover","1");}catch(e){}const c=$("#cover");c.hidden=true;c.innerHTML="";
+    setTab("inicio");window.scrollTo(0,0);i=Math.floor(Math.random()*ids.length);li=0;slide();ss.hidden=false;rot=setInterval(slide,9000);}
+  function wake(e){if(!ss.hidden){if(e){e.preventDefault();e.stopPropagation();}ss.hidden=true;clearInterval(rot);ss.innerHTML="";setTimeout(()=>map.invalidateSize(),30);}
+    clearTimeout(timer);timer=setTimeout(sleep,IDLE);}
+  ss.addEventListener("pointerdown",wake,true);
+  ["pointerdown","keydown","wheel","touchstart"].forEach(ev=>document.addEventListener(ev,()=>wake(),{passive:true,capture:true}));
+  AUD.addEventListener("playing",()=>wake());AUD.addEventListener("timeupdate",()=>{if(!AUD.paused){clearTimeout(timer);timer=setTimeout(sleep,IDLE);}});
+  window.addEventListener("hashchange",()=>{if(location.hash==="#gestion") setTab("inicio");});if(location.hash==="#gestion") setTab("inicio");
+  wake();if(qs.has("dormir")) setTimeout(sleep,300);
+})();
+
 })();
 </script>
 
